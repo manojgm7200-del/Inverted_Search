@@ -1,0 +1,7 @@
+#1;Bye;1;f22.txt;1;#
+#7;hi;2;f11.txt;1;f22.txt;1;#
+#7;hello;2;f11.txt;1;f33.txt;1;#
+#7;how;1;f11.txt;1;#
+#7;Hi;2;f11.txt;1;f22.txt;1;#
+#22;Welocome;1;f22.txt;1;#
+#26;@$;1;f33.txt;1;#

@@ -11,32 +11,35 @@ typedef struct node
 {
 	char fname[30];
 	struct node *link;
-}Slist;
+}File_t;
 
 typedef struct s_node
 {
 	char filename[30];
 	int word_count;
 	struct s_node *link;
-}subnode_t;
+}Subnode_t;
 
 typedef struct m_node
 {
 	char word[30];
 	int file_count;
-	subnode_t *sublink;
+	Subnode_t *sublink;
 	struct m_node *link;
-}mainnode_t;
+}Mainnode_t;
 
-int validate_arg(char *argv[], int index);
-void print_list(Slist *head);
-int insert_at_last(Slist **head, char *filename);
-int insert_word(char *fname, char *word, mainnode_t *arr[]);
+int duplicate_file(char *argv, File_t *file);
+int validate_arg(char *argv[], File_t **file);
+int insert_at_last(File_t **file, char *filename);
+int display_file(File_t *file);
+int insert_word(char *fname, char *word, Mainnode_t *arr[]);
+int valid_backupfile(char *filename);
+int remove_duplicate_file(File_t **file, char *fname);
 
-int create_database(Slist *head, mainnode_t *arr[]);
-int display_database(mainnode_t *arr[]);
-int search_database(char *word, mainnode_t *arr[]);
-int update_database();
-int save_database(mainnode_t *arr[]);
+int create_database(File_t *head, Mainnode_t *arr[]);
+int display_database(Mainnode_t *arr[]);
+int search_database(char *word, Mainnode_t *arr[]);
+int update_database(File_t *head, Mainnode_t *arr[]);
+int save_database(Mainnode_t *arr[]);
 
 #endif

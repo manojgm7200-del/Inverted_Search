@@ -1,36 +1,41 @@
-#include<stdio.h>
-#include"search.h"
+#include <stdio.h>
+#include "search.h"
 
 int main(int argc, char *argv[])
 {
-    Slist *head = NULL;
-    for(int i = 1; i < argc; i++)
+    if(argc < 2)
     {
-        if(validate_arg(argv, i) == FAILURE)
-            continue;
-        else
-            insert_at_last(&head, argv[i]);
+        printf("ERROR... No input files provided\n");
+        return FAILURE;
     }
-    print_list(head);
-    //printf("File is opened successfully\n");
-    if(head == NULL)
+    File_t *file = NULL;
+    if(validate_arg(argv, &file) == FAILURE)
     {
         return FAILURE;
     }
 
     int option;
-    mainnode_t *arr[27] = {0};
+    Mainnode_t *arr[27] = {0};
     char word[30];
-    printf("1. Create database\n2. Display database\n3. Search database\n4. Update database\n5. Save database\n6. Exit\n");
+    int create_flag = 0, update_flag = 0;
+    //printf("1. Create database\n2. Display database\n3. Search database\n4. Update database\n5. Save database\n6. Exit\n");
     while(1)
     {
+        printf("\n1. Create database\n2. Display database\n3. Search database\n4. Update database\n5. Save database\n6. Exit\n");
         printf("\nEnter choice : ");
         scanf("%d", &option);
         switch(option)
         {
             case 1:
-                create_database(head, arr);
-                printf("Created database successfully....\n");
+                if(create_flag == 0)
+                {
+                    create_database(file, arr);
+                    create_flag = 1;
+                }
+                else
+                {
+                    printf("ERROR.... Database is already created\n");
+                }
                 break;
             case 2:
                 display_database(arr);
@@ -41,7 +46,15 @@ int main(int argc, char *argv[])
                 search_database(word, arr);
                 break;
             case 4:
-                update_database();
+                if(update_flag == 0)
+                {
+                    update_database(file, arr);
+                    update_flag = 1;
+                }
+                else
+                {
+                    printf("ERROR.... Database is already updated\n");
+                }
                 break;
             case 5:
                 save_database(arr);
