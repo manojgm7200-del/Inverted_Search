@@ -3,6 +3,70 @@
 #include<ctype.h>
 #include<stdlib.h>
 
+int do_operation(File_t **file, Mainnode_t *arr[])
+{
+    int option;
+    char word[30];
+    int create_flag = 0, update_flag = 0;
+    
+    while(1)
+    {
+        printf("\n1. Create database\n2. Display database\n3. Search database\n4. Update database\n5. Save database\n6. Exit\n");
+        printf("\nEnter choice : ");
+        scanf("%d", &option);
+        switch(option)
+        {
+            case 1:
+                if(create_flag == 0)
+                {    
+                    create_database(*file, arr);
+                    create_flag = 1;    
+                }
+                else
+                {
+                    printf("ERROR.... Database is already created\n");
+                }
+                break;
+            case 2:
+                display_database(arr);
+                break;
+            case 3:
+                printf("Enter word you want to search : ");
+                scanf("%s", word);
+                search_database(word, arr);
+                break;
+            case 4:
+                if(update_flag == 0)
+                {
+                    if(create_flag == 1)
+                    {
+                        printf("Database is not possible to update after create database\n");
+                    }
+                    else
+                    {
+                        update_database(file, arr);
+                        update_flag = 1;
+                    }
+                }
+                else
+                {
+                    printf("ERROR.... Database is already updated\n");
+                }
+                break;
+            case 5:
+                save_database(arr);
+                break;
+            case 6:
+                printf("Exiting....\n");
+                return SUCCESS;
+                break;
+            default:
+                printf("Invalid choice....\n");   
+        }
+    }
+}
+
+/*----------------------------------------------------------------------------------------------------------------------------------------*/
 int create_database(File_t *file, Mainnode_t *arr[])
 {
     char word[30];
@@ -22,9 +86,13 @@ int create_database(File_t *file, Mainnode_t *arr[])
             temp = temp -> link;
             continue;
         }
-        while(fscanf(fptr, "%s", word) != EOF)
+        while(fscanf(fptr, "%s", word) == 1)
         {
-            insert_word(temp -> fname, word, arr);
+            if(insert_word(temp -> fname, word, arr) == FAILURE)
+            {
+                fclose(fptr);
+                return FAILURE;
+            }
         }
         fclose(fptr);
         temp = temp -> link;
@@ -104,7 +172,7 @@ int search_database(char *word, Mainnode_t *arr[])
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------*/
-int update_database(File_t *file, Mainnode_t *arr[])
+int update_database(File_t **file, Mainnode_t *arr[])
 {
     char fname[30], word[30];
     int index, file_count, word_count;
@@ -121,7 +189,6 @@ int update_database(File_t *file, Mainnode_t *arr[])
     FILE *fptr = fopen(fname, "r");
     if(fptr == NULL)
     {
-        fclose(fptr);
         return FAILURE;
     }
 
@@ -130,7 +197,7 @@ int update_database(File_t *file, Mainnode_t *arr[])
         Mainnode_t *M_newNode = malloc(sizeof(Mainnode_t));
         if(M_newNode == NULL)
         {
-            printf("Memory allocation failed....\n");
+            fclose(fptr);
             return FAILURE;
         }
 
@@ -157,13 +224,14 @@ int update_database(File_t *file, Mainnode_t *arr[])
         {
             if(fscanf(fptr, "%[^;];%d;", fname, &word_count) != 2)
             {
-                break;
+                fclose(fptr);
+                return FAILURE;
             }
-            remove_duplicate_file(&file, fname);
+            remove_duplicate_file(file, fname);
             Subnode_t *S_newNode = malloc(sizeof(Subnode_t));
             if(S_newNode == NULL)
             {
-                printf("Memory allocation failed\n");
+                fclose(fptr);
                 return FAILURE;
             } 
 
@@ -187,6 +255,7 @@ int update_database(File_t *file, Mainnode_t *arr[])
         }
         fscanf(fptr, "#");
     }
+    fclose(fptr);
     printf("Database updated successfully....\n");
     return SUCCESS;
 }

@@ -28,18 +28,22 @@ typedef struct m_node
 	struct m_node *link;
 }Mainnode_t;
 
+
 int duplicate_file(char *argv, File_t *file);
 int validate_arg(char *argv[], File_t **file);
 int insert_at_last(File_t **file, char *filename);
 int display_file(File_t *file);
 int insert_word(char *fname, char *word, Mainnode_t *arr[]);
 int valid_backupfile(char *filename);
-int remove_duplicate_file(File_t **file, char *fname);
+int remove_duplicate_file(File_t **file, char *filename);
 
-int create_database(File_t *head, Mainnode_t *arr[]);
+
+
+int do_operation(File_t **file, Mainnode_t *arr[]);
+int create_database(File_t *file, Mainnode_t *arr[]);
 int display_database(Mainnode_t *arr[]);
 int search_database(char *word, Mainnode_t *arr[]);
-int update_database(File_t *head, Mainnode_t *arr[]);
+int update_database(File_t **file, Mainnode_t *arr[]);
 int save_database(Mainnode_t *arr[]);
 
 #endif

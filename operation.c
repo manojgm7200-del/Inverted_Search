@@ -13,8 +13,31 @@ int duplicate_file(char *argv, File_t *file)
     }
     return FAILURE;
 }
-/*----------------------------------------------------------------------------------------------------------------------------------------*/
 
+/*-----------------------------------------------------------------------------------------------------*/
+int is_backupfile(char *argv)
+{
+    FILE *fptr = fopen(argv, "r");
+    if(fptr == NULL)
+        return FAILURE;
+
+    char start = fgetc(fptr);
+    fseek(fptr, -1, SEEK_END);
+    char end = fgetc(fptr);
+    if(end == '\n')
+    {
+        fseek(fptr, -2, SEEK_END);
+        end = fgetc(fptr);
+    }
+    fclose(fptr);
+    if(start == '#' && end == '#')
+    {
+        return SUCCESS;
+    }
+    return FAILURE;
+}
+
+/*---------------------------------------------------------------------------------------------------*/
 int validate_arg(char *argv[], File_t **file)
 {
     for(int i = 1; argv[i] != 0; i++)
@@ -50,6 +73,12 @@ int validate_arg(char *argv[], File_t **file)
             printf("ERROR... Duplicate file found : %s\n", argv[i]);
             continue;
         }
+
+        if(is_backupfile(argv[i]) == SUCCESS)
+        {
+            printf("ERROR... %s is a backup file we can not take it...\n", argv[i]);
+            continue;
+        }
         insert_at_last(file, argv[i]);
     }
     if(display_file(*file) == FAILURE)
@@ -57,7 +86,7 @@ int validate_arg(char *argv[], File_t **file)
     return SUCCESS;
 }
 
-/*----------------------------------------------------------------------------------------------------------------------------------------*/
+/*----------------------------------------------------------------------------------------------------*/
 int insert_at_last(File_t **file, char *file_name)
 {
     File_t *newNode = malloc(sizeof(File_t));
@@ -83,7 +112,7 @@ int insert_at_last(File_t **file, char *file_name)
     return SUCCESS;
 }
 
-/*----------------------------------------------------------------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------------------------*/
 int display_file(File_t *file)
 {
 	if (file == NULL)
@@ -93,7 +122,7 @@ int display_file(File_t *file)
     }
     else
     {
-        printf("\nfile -> ");
+        printf("\nHead -> ");
 	    while (file != NULL)		
 	    {
 		    printf("%s -> ", file -> fname);
@@ -104,7 +133,7 @@ int display_file(File_t *file)
     return SUCCESS;
 }
 
-/*----------------------------------------------------------------------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------------------*/
 int insert_word(char *fname, char *word, Mainnode_t *arr[])
 {
     int index;
@@ -139,6 +168,7 @@ int insert_word(char *fname, char *word, Mainnode_t *arr[])
         if(M_newNode == NULL)
         {
             printf("Memory allocation for mainnode is failed\n");
+            free(S_newNode);
             return FAILURE;
         }
         strcpy(M_newNode -> word, word);
@@ -202,6 +232,7 @@ int insert_word(char *fname, char *word, Mainnode_t *arr[])
     if(M_newNode == NULL)
     {
         printf("Memory allocation for mainnode is failed\n");
+        free(S_newNode);
         return FAILURE;
     }
     strcpy(M_newNode -> word, word);
@@ -213,7 +244,7 @@ int insert_word(char *fname, char *word, Mainnode_t *arr[])
     return SUCCESS;
 }
 
-/*----------------------------------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------*/
 int valid_backupfile(char *filename)
 {
     //File extension
@@ -264,20 +295,22 @@ int valid_backupfile(char *filename)
 }
 
 /*----------------------------------------------------------------------------------------------------------------------------------------*/
-int remove_duplicate_file(File_t **file, char *fname)
+int remove_duplicate_file(File_t **file, char *filename)
 {
     File_t *temp = *file;
     File_t *prev = NULL;
 
     while(temp != NULL)
     {
-        if(strcmp(temp -> fname, fname) == SUCCESS)
+        if(strcmp(temp -> fname, filename) == 0)
         {
             if(prev == NULL)
+            {
                 *file = temp -> link;
-            else
+            }
+            else{
                 prev -> link = temp -> link;
-
+            }
             free(temp);
             return SUCCESS;
         }

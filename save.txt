@@ -1,0 +1,11 @@
+#0;am;1;f11.txt;1;#
+#0;are;1;f22.txt;1;#
+#7;Hello;1;f11.txt;1;#
+#7;hi;2;f11.txt;1;f22.txt;1;#
+#7;how;1;f11.txt;1;#
+#7;hello;1;f22.txt;1;#
+#7;Hi;1;f33.txt;1;#
+#22;welcome;1;f33.txt;1;#
+#24;you;1;f33.txt;1;#
+#26;$#;1;f22.txt;1;#
+#26;1234;1;f33.txt;1;#
