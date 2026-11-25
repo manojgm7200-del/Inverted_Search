@@ -9,9 +9,10 @@ int do_operation(File_t **file, Mainnode_t *arr[])
     char word[30];
     int create_flag = 0, update_flag = 0;
     
-    while(1)
-    {
+   
         printf("\n1. Create database\n2. Display database\n3. Search database\n4. Update database\n5. Save database\n6. Exit\n");
+        while(1)
+        {
         printf("\nEnter choice : ");
         scanf("%d", &option);
         switch(option)
